@@ -54,6 +54,11 @@ jobs:
       - name: Load and run Docker image on server
         run: |
           ssh ubuntu@54.180.160.64 << 'EOF'
+            cd ~/app || git clone https://github.com/chaijewon/devops3.git ~/app
+            cd ~/app
+            git pull origin main
+            ./gradlew clean build
+            docker build -t spring-app:latest
             docker stop spring-app || true
             docker rm spring-app || true
             docker load -i spring-app.tar
