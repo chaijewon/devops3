@@ -2,7 +2,7 @@
 FROM gradle:7.6.0-jdk17-alpine as builder
 COPY . /app
 WORKDIR /app
-RUN gradle bulid --no-deamon
+RUN gradle build --no-deamon
 
 # 2. run
 FROM eclipse-temurin:17.0.10_7-jre-alpine
