@@ -1,13 +1,12 @@
-# 1. Build
-FROM gradle:7.6.0-jdk17-alpine as builder
-COPY . /app
+# Stage 1: Build
+FROM gradle:7.6.1-jdk17-alpine AS builder
 WORKDIR /app
-RUN gradle build --no-deamon
+COPY . .
+RUN ./gradlew build --no-daemon
 
-# 2. run
-FROM eclipse-temurin:17.0.10_7-jre-alpine
+# Stage 2: Run
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
-ENTRYPOINT [ "java","-jar","/app.jar" ]
-
-# MB 
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
