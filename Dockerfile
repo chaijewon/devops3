@@ -1,12 +1,19 @@
-# Stage 1: Build
-FROM gradle:7.6.1-jdk17-alpine AS builder
+# 1단계: 빌드 스테이지 (선택사항 - 멀티스테이지)
+FROM gradle:8.4-jdk17 AS build
+COPY --chown=gradle:gradle . /app
 WORKDIR /app
-COPY . .
-RUN ./gradlew build --no-daemon
+RUN gradle build -x test
 
-# Stage 2: Run
-FROM eclipse-temurin:17-jre-alpine
+# 2단계: 실제 실행 이미지
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar app.jar
+
+# JAR 복사
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# 포트 오픈
+EXPOSE 8080
+
+# 애플리케이션 실행
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
